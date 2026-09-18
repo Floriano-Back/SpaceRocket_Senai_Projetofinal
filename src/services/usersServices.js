@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 const usersServices = {
     criarUsuario: async (user) =>{
+        console.log(user.nome, user.email, user.senha_hash, user.tipo_usuario);
         const result = await usersRepository.criar(user.nome, user.email, user.senha_hash, user.tipo_usuario);
         return result;
     },
