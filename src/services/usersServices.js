@@ -8,7 +8,7 @@ const usersServices = {
         return result;
     },
     atualizarUsuario: async (user) =>{
-        const result = await usersRepository.atualizar(user.id, user.nome, user.email, user.senha_hash, user.tipo_usuario);
+        const result = await usersRepository.atualizar(user.nome, user.email, user.senha_hash, user.id_usuario);
         return result;
     },
     verUsuario: async () =>{

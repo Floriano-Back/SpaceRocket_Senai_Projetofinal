@@ -16,9 +16,9 @@ const usersRepository = {
         const [result] = await pool.execute(sql, [id]);
         return result;
     },
-    atualizar: async (nome, email, senha_hash, tipo_usuario) =>{
-        const sql = "UPDATE usuarios SET nome = ?, email = ?, senha_hash = ?, tipo_usuario = ? WHERE id = ?"
-        const [result] = await pool.execute(sql, [nome, email, senha_hash, tipo_usuario]);
+    atualizar: async (nome, email, senha_hash, id_usuario) =>{
+        const sql = "UPDATE usuarios SET nome = ?, email = ?, senha_hash = ? WHERE id_usuario = ?"
+        const [result] = await pool.execute(sql, [nome, email, senha_hash,id_usuario]);
         return result;
     },
     encontrarPorEmail: async (email) =>{

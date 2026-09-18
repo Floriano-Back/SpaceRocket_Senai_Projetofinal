@@ -1,20 +1,20 @@
 class Users {
-    #id;
+    #id_usuario;
     #nome;
     #email;
     #senha_hash;
     #tipo_usuario;
 
-    constructor(id, nome, email, senha_hash, tipo_usuario){
-            this.#id = id;
+    constructor(nome, email, senha_hash, tipo_usuario, id_usuario = null){
+            this.#id_usuario = id_usuario;
             this.#nome = nome;
             this.#email = email;
             this.#senha_hash = senha_hash;
             this.#tipo_usuario = tipo_usuario;
     }
 
-    get id(){
-        return this.#id;
+    get id_usuario(){
+        return this.#id_usuario;
     }
 
     get nome(){
