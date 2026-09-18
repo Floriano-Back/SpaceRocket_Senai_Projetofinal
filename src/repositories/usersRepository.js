@@ -2,7 +2,7 @@ import pool from '../configs/database.js';
 
 const usersRepository = {
     criar: async (nome, email, senha_hash, tipo_usuario) =>{
-        const sql = "INSERT INTO usuarios (nome, email, senha_hash, tipo_usuario) VALUES (null, ?, ?, ?, ?, null);";
+        const sql = "INSERT INTO usuarios (nome, email, senha_hash, tipo_usuario) VALUES (null, ?, ?, ?, ?);";
         const [result] = await pool.execute(sql, [nome, email, senha_hash, tipo_usuario]);
         return result;
     },
