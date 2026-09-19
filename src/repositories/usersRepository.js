@@ -22,8 +22,9 @@ const usersRepository = {
         return result;
     },
     encontrarPorEmail: async (email) =>{
-        const sql = "SELECET * FROM usuarios WHERE email = ?;";
-        const [result] = await pool.execute(sql, [email])
+        const sql = "SELECT * FROM usuarios WHERE email = ?;";
+        const [result] = await pool.execute(sql, [email]);
+        return result;
     }
 };
 

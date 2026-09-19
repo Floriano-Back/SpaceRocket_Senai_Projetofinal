@@ -15,7 +15,7 @@ const userControllers ={
         try{
             const {nome, email, senha_hash, tipo_usuario} = req.body;
             const hashedSenha = await usersServices.hashSenha(senha_hash);
-            const usuario = new Users(null, nome, email, hashedSenha, tipo_usuario);
+            const usuario = new Users(nome, email, hashedSenha, tipo_usuario);
             const result = await usersServices.criarUsuario(usuario);
 
             return res.status(200).json({msg: "Usuario criado com sucesso"});   
@@ -29,7 +29,6 @@ const userControllers ={
         try{
             const {id_usuario} = req.params;
             const {nome, email, senha_hash} = req.body;
-            console.log(null, nome, email, senha_hash, null,id_usuario);
 
             if(!nome && !email && !senha_hash){
                 return res.status(400).json({msg: "Necessario o envio de pelo menos alguma informação para ser atualizada!"})};
