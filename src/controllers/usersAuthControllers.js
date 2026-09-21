@@ -9,7 +9,6 @@ const usersAuthControllers = {
             const {email, senha_hash} = req.body;
             
             const userExists = await usersServices.usuarioPorEmail(email);
-            console.log(userExists);
         
             if(!userExists || userExists.length === 0){
                 return res.status(400).json({msg: "Senha ou email estão incorretos"})

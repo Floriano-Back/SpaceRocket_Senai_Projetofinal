@@ -17,7 +17,7 @@ const usersRepository = {
         return result;
     },
     atualizar: async (nome, email, senha_hash, id_usuario) =>{
-        const sql = "UPDATE usuarios SET nome = ?, email = ?, senha_hash = ? WHERE id_usuario = ?"
+        const sql = "UPDATE usuarios SET nome = ?, email = ?, senha_hash = ? WHERE id_usuario = ?";
         const [result] = await pool.execute(sql, [nome, email, senha_hash,id_usuario]);
         return result;
     },
@@ -25,6 +25,10 @@ const usersRepository = {
         const sql = "SELECT * FROM usuarios WHERE email = ?;";
         const [result] = await pool.execute(sql, [email]);
         return result;
+    },
+    apagar: async(id_usuario) =>{
+        const sql = "DELETE FROM usuarios WHERE id_usuario = ?;";
+        const [result] = await pool.execute(sql,[id_usuario]);
     }
 };
 

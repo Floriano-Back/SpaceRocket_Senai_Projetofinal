@@ -1,10 +1,14 @@
 import usersRepository from "../repositories/usersRepository.js";
 import bcrypt from 'bcrypt';
+import appError from '../errors/appError.js';
 
 const usersServices = {
     criarUsuario: async (user) =>{
         console.log(user.nome, user.email, user.senha_hash, user.tipo_usuario);
         const result = await usersRepository.criar(user.nome, user.email, user.senha_hash, user.tipo_usuario);
+        if(!result){
+         throw new AppError('Não foi possivel realizar o cadastro!', 404);   
+        }
         return result;
     },
     atualizarUsuario: async (user) =>{
@@ -13,6 +17,9 @@ const usersServices = {
     },
     verUsuario: async () =>{
         const result = await usersRepository.encontrar();
+        if(!result){
+            throw new AppError('Usuário não encontrado!', 404);
+        }
         return result;
     },
 
@@ -22,6 +29,10 @@ const usersServices = {
     },
     usuarioPorEmail: async (email) =>{
         const result = await usersRepository.encontrarPorEmail(email);
+        return result;
+    },
+    apagarUsuario: async (id_usuario) =>{
+        const result = await usersRepository.apagar(id_usuario)
         return result;
     }
 };
