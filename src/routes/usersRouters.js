@@ -5,7 +5,7 @@ import authMiddlewares from "../middlewares/authMiddlewares.js";
 
 const usersRouters = Router();
 
-usersRouters.get("/", usersControllers.selecionar);
+usersRouters.get("/", authMiddlewares, authAdminMiddlewares, usersControllers.selecionar);
 usersRouters.post("/", usersControllers.cadastrar);
 usersRouters.put("/:id_usuario", usersControllers.atualizar);
 usersRouters.delete("/:id_usuario",authMiddlewares, authAdminMiddlewares, usersControllers.deletar);
