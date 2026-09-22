@@ -32,7 +32,10 @@ const usersServices = {
         return result;
     },
     apagarUsuario: async (id_usuario) =>{
-        const result = await usersRepository.apagar(id_usuario)
+        const result = await usersRepository.apagar(id_usuario);
+        if (result.affectedRows === 0) {
+            throw new appError('Usuário não encontrado!', 404)};
+
         return result;
     }
 };

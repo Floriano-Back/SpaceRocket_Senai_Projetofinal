@@ -29,6 +29,7 @@ const usersRepository = {
     apagar: async(id_usuario) =>{
         const sql = "DELETE FROM usuarios WHERE id_usuario = ?;";
         const [result] = await pool.execute(sql,[id_usuario]);
+        return result;
     }
 };
 
