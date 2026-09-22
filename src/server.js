@@ -7,7 +7,6 @@ import errorMiddlewares from '../src/middlewares/errorMiddlewares.js';
 const app = express();
 const port = process.env.SERVER_PORT;
 
-
 app.use(express.json());
 app.use('/users', usersRouters);
 app.use('/auth', usersAuthRouters);
