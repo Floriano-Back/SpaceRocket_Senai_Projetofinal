@@ -1,6 +1,5 @@
 import usersRepository from "../repositories/usersRepository.js";
 import bcrypt from 'bcrypt';
-import appError from '../errors/appError.js';
 
 const usersServices = {
     criarUsuario: async (user) =>{
