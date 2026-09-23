@@ -15,9 +15,7 @@ const userControllers ={
 
             const hashedSenha = await usersServices.hashSenha(senha_hash);
             const usuario = new Users(nome, email, hashedSenha, tipo_usuario);
-            const result = await usersServices.criarUsuario(usuario);
-
-            
+            const result = await usersServices.criarUsuario(usuario);        
 
             return res.status(200).json({msg: "Usuario criado com sucesso"});
     },
