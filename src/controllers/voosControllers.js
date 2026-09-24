@@ -1,5 +1,5 @@
 import voosServices from "../services/voosServices.js";
-
+import Voos from "../models/Voos.js";
 const voosControllers = {
   listarDisponiveis: async (req, res) => {
     try {
@@ -7,7 +7,7 @@ const voosControllers = {
 
       return res.status(200).json({
         msg: "Voos disponíveis recuperados!",
-        result: voos,
+        resultado: voos,
       });
     } catch (error) {
       console.error(" Ocorreu um erro no Controller:");
@@ -25,7 +25,7 @@ const voosControllers = {
         error: error.message
       });
     }
-  },
+  },//fimdaFuncaolistarDisponiveis
   
   cadastrar: async (req, res) => {
   const {
@@ -39,13 +39,8 @@ const voosControllers = {
   } = req.body;
 
   if (
-    !codigo_voo ||
-    !origem ||
-    !destino ||
-    !data_voo ||
-    !horario_voo ||
-    capacidade == null ||
-    valor == null
+    !codigo_voo || !origem || !destino || !data_voo || !horario_voo || capacidade == null || valor == null
+    
   ) {
     return res.status(400).json({
       msg: "Envie todos os dados obrigatórios do voo.",
@@ -53,31 +48,41 @@ const voosControllers = {
   }
 
   if (
-    !Number.isInteger(Number(capacidade)) ||
-    Number(capacidade) <= 0 ||
-    !Number.isFinite(Number(valor)) ||
-    Number(valor) < 0
+    !Number.isInteger(Number(capacidade)) || Number(capacidade) <= 0 || !Number.isFinite(Number(valor)) ||  Number(valor) < 0
+   
   ) {
     return res.status(400).json({
       msg: "A capacidade deve ser positiva e o valor não pode ser negativo.",
     });
   }
 
-  const resultado = await voosServices.criarVoo({
+  try {
+    const novoVoo = new Voos(
     codigo_voo,
     origem,
     destino,
     data_voo,
     horario_voo,
-    capacidade: Number(capacidade),
-    valor: Number(valor),
-  });
+    Number(capacidade),
+    Number(valor),
+    "AGENDADO"
+);
 
-  return res.status(201).json({
-    msg: "Voo cadastrado com sucesso!",
-    id_voo: resultado.insertId,
-  });
-},
+const resultado = await voosServices.criarVoo(novoVoo);
+
+    return res.status(201).json({
+      msg: "Voo cadastrado com sucesso!",
+      id_voo: resultado.insertId,
+    });
+  } catch (error) {
+    console.error("Erro ao cadastrar voo:", error);
+    return res.status(500).json({ 
+      msg: "Erro interno do servidor ao cadastrar voo.",
+      error: error.message 
+    });
+  }
+}, //Fim da função cadastrar
+
 
 buscarPorId: async (req, res) => {
   const id = Number(req.params.id);
@@ -101,7 +106,7 @@ buscarPorId: async (req, res) => {
     console.error("Erro ao buscar voo:", error);
     return res.status(500).json({ msg: "Erro interno ao buscar voo." });
   }
-},
+},//fim da funcao bucarPorId
 
 atualizar: async (req, res) => {
   const id = Number(req.params.id);
@@ -128,14 +133,19 @@ atualizar: async (req, res) => {
       return res.status(404).json({ msg: "Voo não encontrado." });
     }
 
-    await voosServices.atualizarDados(id, {
+    const dadosVoo = new Voos(
+      vooExistente.codigo_voo,
       origem,
       destino,
       data_voo,
       horario_voo,
-      valor: Number(valor),
+      vooExistente.capacidade,
+      Number(valor),
       vooStatus,
-    });
+      id
+    );
+
+    await voosServices.atualizarDados(id, dadosVoo);
 
     const vooAtualizado = await voosServices.buscarPorId(id);
 
@@ -147,7 +157,7 @@ atualizar: async (req, res) => {
     console.error("Erro ao atualizar voo:", error);
     return res.status(500).json({ msg: "Erro interno ao atualizar voo." });
   }
-},
+},//fimdaFuncaoAtualizar
 deletar: async (req, res) => {
   const id = Number(req.params.id);
 
@@ -176,7 +186,7 @@ deletar: async (req, res) => {
     console.error("Erro ao excluir voo:", error);
     return res.status(500).json({ msg: "Erro interno ao excluir voo." });
   }
-},
+},//fimdaFuncaoDeletar
 
 };
 

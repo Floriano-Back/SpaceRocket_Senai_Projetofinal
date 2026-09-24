@@ -1,4 +1,18 @@
 import pool from "../configs/database.js";
+import Voos from "../models/Voos.js";
+
+const transformarEmVoo = (registro) => new Voos(
+  registro.codigo_voo,
+  registro.origem,
+  registro.destino,
+  registro.data_voo,
+  registro.horario_voo,
+  registro.capacidade,
+  registro.valor,
+  registro.vooStatus,
+  registro.id_voo,
+  registro.vagas_disponiveis
+);
 
 const voosRepository = {
   encontrarDisponiveis: async () => {
@@ -12,7 +26,7 @@ const voosRepository = {
     `;
 
     const [voos] = await pool.execute(sql);
-    return voos;
+    return voos.map(transformarEmVoo);
   },
 
   criar: async (voo) => {
@@ -52,7 +66,7 @@ const voosRepository = {
     [id]
   );
 
-  return voos[0] ?? null;
+  return voos[0] ? transformarEmVoo(voos[0]) : null;
 },
 atualizarDados: async (id, voo) => {
   const [resultado] = await pool.execute(
