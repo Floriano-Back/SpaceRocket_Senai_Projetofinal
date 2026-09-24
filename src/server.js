@@ -4,7 +4,7 @@ import passageiroRoutes from './routes/passageiroRoutes.js';
 //import authRoutes from './routes/authRoutes.js';
 
 const app = express();
-const port = process.env.SERVER_PORT;
+const port = Number(process.env.SERVER_PORT) || 3000;
 
 app.use(express.json());
 app.use('/passageiros', passageiroRoutes);

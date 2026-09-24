@@ -1,16 +1,12 @@
-import express from 'express'; 
+import express from 'express';
+import passageiroController from '../controllers/passageiroController.js';
+
 const router = express.Router();
-import * as passageiroController from '../controllers/passageiroController.js';
 
-
-
-// Mapeamento das rotas para as funções do controller
-router.post('/passageiros', passageiroController.cadastrar);
-router.get('/passageiros', passageiroController.listarTodos);
-router.get('/passageiros/:id', passageiroController.obterPorId);
-router.put('/passageiros/:id', passageiroController.atualizar);
-router.delete('/passageiros/:id', passageiroController.deletar);
-
-module.exports = router;
+router.post('/', passageiroController.cadastrar);
+router.get('/', passageiroController.listarTodos);
+router.get('/:id', passageiroController.obterPorId);
+router.put('/:id', passageiroController.atualizar);
+router.delete('/:id', passageiroController.deletar);
 
 export default router;

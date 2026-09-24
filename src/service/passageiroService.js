@@ -1,5 +1,5 @@
-import passageiroRepository from ('../repositories/passageiroRepository.js');
-const bcrypt = require('bcrypt'); // Para criptografia de senhas
+import bcrypt from 'bcrypt';
+import passageiroRepository from '../repositories/passageiroRepository.js';
 
 class PassageiroService {
 
@@ -68,4 +68,4 @@ class PassageiroService {
     }
 }
 
-module.exports = new PassageiroService();
+export default new PassageiroService();

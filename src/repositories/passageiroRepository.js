@@ -1,5 +1,6 @@
-//const db = require('../config/db'); // Suas configurações de conexão com o banco
 import 'dotenv/config';
+import db from '../configs/database.js';
+
 class passageiroRepository {
     
     // 1. Cadastrar Passageiro Completo (Usa Transação para garantir consistência)
@@ -138,4 +139,4 @@ class passageiroRepository {
     }
 }
 
-module.exports = new passageiroRepository();
+export default new passageiroRepository();

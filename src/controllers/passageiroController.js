@@ -1,5 +1,4 @@
-import passageiroService from '../services/passageiroService.js';
-
+import passageiroService from '../service/passageiroService.js';
 
 class passageiroController {
 
@@ -71,8 +70,7 @@ class passageiroController {
     }
 }
 
-// Exporta uma instância da classe para ser usada no arquivo de rotas
-module.exports = new passageiroController();
+export default new passageiroController();
 
 
 
