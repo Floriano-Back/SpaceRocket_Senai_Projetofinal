@@ -15,6 +15,16 @@ const transformarEmVoo = (registro) => new Voos(
 );
 
 const voosRepository = {
+  listarTodos: async () => {
+    const sql = `
+      SELECT *
+      FROM voos
+      ORDER BY data_voo, horario_voo;
+    `;
+
+    const [voos] = await pool.execute(sql);
+    return voos.map(transformarEmVoo);
+  },
   encontrarDisponiveis: async () => {
     const sql = `
       SELECT *

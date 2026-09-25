@@ -5,6 +5,8 @@ import authAdminMiddlewares from "../middlewares/authAdminMiddlewares.js";
 
 const voosRouters = Router();
 
+voosRouters.get("/all", authMiddlewares, authAdminMiddlewares, voosControllers.listarTodos);
+
 voosRouters.get("/", voosControllers.listarDisponiveis);
 
 voosRouters.post(

@@ -5,6 +5,10 @@ const voosServices = {
     return await voosRepository.encontrarDisponiveis();
   },
 
+  listarTodos: async () => {
+    return await voosRepository.listarTodos();
+  },
+
   criarVoo: async (voo) => {
     return await voosRepository.criar(voo);
   },

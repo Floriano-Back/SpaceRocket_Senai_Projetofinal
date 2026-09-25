@@ -1,9 +1,9 @@
 import voosServices from "../services/voosServices.js";
 import Voos from "../models/Voos.js";
 const voosControllers = {
-  listarDisponiveis: async (req, res) => {
+  listarTodos: async (req, res) => {
     try {
-      const voos = await voosServices.listarDisponiveis();
+      const voos = await voosServices.listarTodos();
 
       return res.status(200).json({
         msg: "Voos disponíveis recuperados!",
@@ -25,17 +25,42 @@ const voosControllers = {
         error: error.message
       });
     }
+  },
+  listarDisponiveis: async (req, res) => {
+    try {
+      const voos = await voosServices.listarDisponiveis();
+
+      return res.status(200).json({
+          msg: "Voos disponíveis recuperados!",
+          resultado: voos,
+      });
+    } catch (error) {
+      console.error(" Ocorreu um erro no Controller:");
+      
+      // Se for um AggregateError, vamos expor a lista de erros reais internos
+      if (error instanceof AggregateError) {
+        console.error("Detalhes do AggregateError:", error.errors);
+      } else {
+        console.error(error.message || error);
+      }
+
+      // Evita que a requisição do usuário fique "pendurada" e responde com 500
+      return res.status(500).json({
+          msg: "Erro interno do servidor ao listar voos.",
+          error: error.message
+      });
+    }
   },//fimdaFuncaolistarDisponiveis
   
   cadastrar: async (req, res) => {
   const {
-    codigo_voo,
-    origem,
-    destino,
-    data_voo,
-    horario_voo,
-    capacidade,
-    valor,
+      codigo_voo,
+      origem,
+      destino,
+      data_voo,
+      horario_voo,
+      capacidade,
+      valor,
   } = req.body;
 
   if (
