@@ -10,7 +10,7 @@ voosRouters.get("/all", authMiddlewares, authAdminMiddlewares, voosControllers.l
 voosRouters.get("/", voosControllers.listarDisponiveis);
 
 voosRouters.post(
-  "/",authMiddlewares,authAdminMiddlewares,voosControllers.cadastrar
+  "/", authMiddlewares, authAdminMiddlewares, voosControllers.cadastrar
 );
 voosRouters.get("/:id", voosControllers.buscarPorId);
 

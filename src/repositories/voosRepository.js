@@ -71,16 +71,16 @@ const voosRepository = {
   },
 
   encontrarPorId: async (id) => {
-  const [voos] = await pool.execute(
-    "SELECT * FROM voos WHERE id_voo = ?",
-    [id]
-  );
+    const [voos] = await pool.execute(
+      "SELECT * FROM voos WHERE id_voo = ?",
+      [id]
+    );
 
-  return voos[0] ? transformarEmVoo(voos[0]) : null;
-},
-atualizarDados: async (id, voo) => {
-  const [resultado] = await pool.execute(
-    `UPDATE voos
+    return voos[0] ? transformarEmVoo(voos[0]) : null;
+  },
+  atualizarDados: async (id, voo) => {
+    const [resultado] = await pool.execute(
+      `UPDATE voos
      SET origem = ?,
          destino = ?,
          data_voo = ?,
@@ -88,27 +88,27 @@ atualizarDados: async (id, voo) => {
          valor = ?,
          vooStatus = ?
      WHERE id_voo = ?`,
-    [
-      voo.origem,
-      voo.destino,
-      voo.data_voo,
-      voo.horario_voo,
-      voo.valor,
-      voo.vooStatus,
-      id,
-    ]
-  );
+      [
+        voo.origem,
+        voo.destino,
+        voo.data_voo,
+        voo.horario_voo,
+        voo.valor,
+        voo.vooStatus,
+        id,
+      ]
+    );
 
-  return resultado;
-},
-deletar: async (id) => {
-  const [resultado] = await pool.execute(
-    "DELETE FROM voos WHERE id_voo = ?",
-    [id]
-  );
+    return resultado;
+  },
+  deletar: async (id) => {
+    const [resultado] = await pool.execute(
+      "DELETE FROM voos WHERE id_voo = ?",
+      [id]
+    );
 
-  return resultado;
-},
+    return resultado;
+  },
 
 };
 
