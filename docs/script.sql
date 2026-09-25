@@ -82,3 +82,11 @@ CREATE TABLE agendamentos (
     UNIQUE (id_passageiro, id_voo)
 );
 
+CREATE TABLE enderecos (
+    id_endereco INT AUTO_INCREMENT PRIMARY KEY,
+    id_passageiro INT NOT NULL,
+    cep VARCHAR(9) NOT NULL,
+    rua VARCHAR (100) NOT NULL,
+    cidade VARCHAR (100) NOT NULL,
+    estado VARCHAR (100) NOT NULL
+);
