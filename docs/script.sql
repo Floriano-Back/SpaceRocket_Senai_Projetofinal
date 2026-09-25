@@ -83,4 +83,3 @@ CREATE TABLE agendamentos (
 
     UNIQUE (id_passageiro, id_voo)
 );
-
