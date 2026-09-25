@@ -1,7 +1,5 @@
 CREATE DATABASE IF NOT EXISTS spacerocket;
 
---DROP DATABASE spacerocket;
-
 USE spacerocket;
 
 -- ===============================
