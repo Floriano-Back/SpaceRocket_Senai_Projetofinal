@@ -5,7 +5,7 @@ import usersAuthRouters from '../src/routes/usersAuthRouters.js';
 import errorMiddlewares from '../src/middlewares/errorMiddlewares.js';
 import voosRouters from "../src/routes/voosRouters.js";
 import passageiroRoutes from './routes/passageiroRoutes.js';
-import agendamentosRouter from '../src/router/agendamentoRouter.js';
+import agendamentosRouters from './routes/agendamentoRouters.js';
 
 const app = express();
 const port = process.env.SERVER_PORT;
@@ -15,6 +15,7 @@ app.use('/users', usersRouters);
 app.use('/auth', usersAuthRouters);
 app.use("/voos", voosRouters);
 app.use('/passageiros', passageiroRoutes);
+app.use('/agendamentos', agendamentosRouters);
 
 app.use(errorMiddlewares);
 

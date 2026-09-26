@@ -11,8 +11,8 @@ class PassageiroService {
         }
 
         // Criptografa a senha para salvar com segurança na tabela 'usuarios'
-        const saltRounds = 10;
-        dadosPassageiro.senha_hash = await bcrypt.hash(dadosPassageiro.senha, saltRounds);
+        //const saltRounds = 10;
+        //dadosPassageiro.senha_hash = await bcrypt.hash(dadosPassageiro.senha, saltRounds);
 
         try {
             // Chama o repositório para salvar (Usuário + Passageiro + Endereço)

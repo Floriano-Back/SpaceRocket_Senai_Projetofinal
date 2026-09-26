@@ -1,11 +1,10 @@
 import { Connection } from 'mysql2';
 import agendamentoRepository from '../repositories/agendamentoRepository.js';
-import { verificarVagas } from '../utils/verificarVagas.js';
 
 const agendamentoService = {
     criar: async (id_passageiro, id_voo, data_agendamento, agendamentoStatus) => {
         const result = await agendamentoRepository.criar(id_passageiro, id_voo, data_agendamento, agendamentoStatus);
-        const assentos = await verificarVagas(Connection, id_voo);
+        const assentos = await verificarAssento(Connection, id_voo);
         if (assentos > 0) {
             throw new Error('Não há vagas disponíveis para este voo.');
         }

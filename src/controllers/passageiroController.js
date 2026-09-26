@@ -1,4 +1,4 @@
-import passageiroService from '../service/passageiroService.js';
+import passageiroService from '../services/passageiroService.js';
 
 class passageiroController {
 
