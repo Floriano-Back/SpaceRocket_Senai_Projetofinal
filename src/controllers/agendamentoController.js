@@ -20,7 +20,7 @@ const agendamentoController = {
 
         const result = await agendamentoController.deletar(id_agendamento);
 
-        return res.status(200).json({msg: "Agendaento cancelado"});  
+        return res.status(200).json({msg: "Agendaento cancelado"}); 
 
     }
 }

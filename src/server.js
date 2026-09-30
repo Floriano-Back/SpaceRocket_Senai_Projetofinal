@@ -4,8 +4,8 @@ import usersRouters from '../src/routes/usersRouters.js';
 import usersAuthRouters from '../src/routes/usersAuthRouters.js';
 import errorMiddlewares from '../src/middlewares/errorMiddlewares.js';
 import voosRouters from "../src/routes/voosRouters.js";
-import passageiroRoutes from './routes/passageiroRoutes.js';
-import agendamentosRouters from './routes/agendamentoRouters.js';
+import passageiroRoutes from '../src/routes/passageiroRoutes.js';
+import agendamentosRouters from '../src/routes/agendamentoRouters.js';
 
 const app = express();
 const port = process.env.SERVER_PORT;
@@ -20,5 +20,4 @@ app.use('/agendamentos', agendamentosRouters);
 app.use(errorMiddlewares);
 
 app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
+    console.log(`Servidor rodando na porta ${port}`)});

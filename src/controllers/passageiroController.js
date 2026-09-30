@@ -7,6 +7,7 @@ class passageiroController {
         try {
             // Pega os dados enviados no corpo da requisição (JSON)
             const dadosPassageiro = req.body;
+            console.log("Dados recebidos para cadastro:", dadosPassageiro);
 
             // Envia para o Service processar as validações e salvar
             const resultado = await passageiroService.cadastrar(dadosPassageiro);

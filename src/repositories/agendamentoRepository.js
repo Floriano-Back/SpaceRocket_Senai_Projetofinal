@@ -2,7 +2,7 @@ import pool from '../configs/database.js';
 
 const agendamentoRepository = {
     criar: async (id_passageiro, id_voo, data_agendamento) =>{
-        const sql = `INSERT INTO agendamentos (id_passageiro, id_voo, data_agendamento, agendamentoStatus) VALUES (?,?,?,"PENDENTE");`;
+        const sql = `INSERT INTO agendamentos (id_passageiro, id_voo, data_agendamento, agendamentosStatus) VALUES (?,?,?,"PENDENTE");`;
         const [result] = await pool.execute(sql, [id_passageiro, id_voo, data_agendamento]);
         return result;
     },
@@ -37,12 +37,12 @@ const agendamentoRepository = {
         return result;
     },
     verificarAssento: async (id_voo) => {
-        const sql = "SELECT COUNT(*) AS vagas_ocupadas FROM agendamentos WHERE id_voo = ? AND agendamentoStatus = 'CONFIRMADO';";
+        const sql = "SELECT COUNT(*) AS vagas_ocupadas FROM agendamentos WHERE id_voo = ? AND agendamentosStatus = 'CONFIRMADO';";
         const [result] = await pool.execute(sql, [id_voo]);
         return result[0].vagas_ocupadas;
     },
     ocuparAssento: async (id_agendamento) => {
-        const sql = "UPDATE agendamentos SET agendamentoStatus = 'CONFIRMADO' WHERE id_agendamento = ?;";
+        const sql = "UPDATE agendamentos SET agendamentosStatus = 'CONFIRMADO' WHERE id_agendamento = ?;";
         const [result] = await pool.execute(sql, [id_agendamento]);
         return result;
     }

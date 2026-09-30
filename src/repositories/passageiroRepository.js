@@ -1,11 +1,11 @@
 import 'dotenv/config';
-import db from '../configs/database.js';
+import pool from '../configs/database.js';
 
 class passageiroRepository {
     
     // 1. Cadastrar Passageiro Completo (Usa Transação para garantir consistência)
     async cadastrarCompleto(dadosPassageiro) {
-        const connection = await db.getConnection();
+        const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
 
@@ -73,7 +73,7 @@ class passageiroRepository {
             LEFT JOIN enderecos e ON p.id_passageiro = e.id_passageiro
             WHERE p.id_passageiro = ?
         `;
-        const [rows] = await db.query(query, [id_passageiro]);
+        const [rows] = await pool.query(query, [id_passageiro]);
         return rows[0] || null;
     }
 
@@ -85,13 +85,13 @@ class passageiroRepository {
             INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
             ORDER BY u.nome ASC
         `;
-        const [rows] = await db.query(query);
+        const [rows] = await pool.query(query);
         return rows;
     }
 
     // 4. Atualizar dados do Passageiro e do Usuário
     async atualizar(id_passageiro, dadosNovos) {
-        const connection = await db.getConnection();
+        const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
 
@@ -134,7 +134,7 @@ class passageiroRepository {
             INNER JOIN passageiros p ON u.id_usuario = p.id_usuario
             WHERE p.id_passageiro = ?
         `;
-        const [result] = await db.query(query, [id_passageiro]);
+        const [result] = await pool.query(query, [id_passageiro]);
         return result.affectedRows > 0;
     }
 }
