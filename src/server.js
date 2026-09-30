@@ -6,10 +6,12 @@ import errorMiddlewares from '../src/middlewares/errorMiddlewares.js';
 import voosRouters from "../src/routes/voosRouters.js";
 import passageiroRoutes from '../src/routes/passageiroRoutes.js';
 import agendamentosRouters from '../src/routes/agendamentoRouters.js';
+import cors from 'cors'; 
 
 const app = express();
 const port = process.env.SERVER_PORT;
 
+app.use(cors());
 app.use(express.json());
 app.use('/users', usersRouters);
 app.use('/auth', usersAuthRouters);

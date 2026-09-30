@@ -1,28 +1,21 @@
 import agendamentoService from "../services/agendamentoService.js";
-import appError from '../errors/appError.js';
-
+const h = (fn) => (req, res, next) => fn(req, res, next).catch(next);
+ 
 const agendamentoController = {
-    listar: async (req,res) =>{
-        const result = await agendamentoService.listarTudo();
-        return res.status(200).json({msg: "Segue todos os agedamentos criados", result});
-    },    
-    criar: async (req, res,next) => {
-        const {id_passageiro, id_voo, data_agendamento, agendamentoStatus} = req.body;
-
-        const result = await agendamentoService.criar(id_passageiro, id_voo, data_agendamento, agendamentoStatus);
-        if(!id_passageiro && !id_voo && !data_agendamento){
-        throw new appError("Necessario o envio de todas as informações solitiada para realizar o agendamento!")};
-
-        res.status(200).json({msg: "Agendamento criado com sucesso!", result});
-    },
-    deletar: async (req,res) =>{
-        const {id_agendamento} = req.params;
-
-        const result = await agendamentoController.deletar(id_agendamento);
-
-        return res.status(200).json({msg: "Agendaento cancelado"}); 
-
-    }
-}
-
+    listar: h(async (req, res) => {
+        const result = await agendamentoService.listar(req.user);
+        return res.status(200).json({ msg: "Agendamentos recuperados!", result });
+    }),
+ 
+    criar: h(async (req, res) => {
+        const result = await agendamentoService.criar(req.user, req.body);
+        return res.status(201).json({ msg: "Agendamento criado com sucesso!", id_agendamento: result.insertId });
+    }),
+ 
+    deletar: h(async (req, res) => {
+        await agendamentoService.deletar(req.user, Number(req.params.id));
+        return res.status(200).json({ msg: "Agendamento cancelado!" });
+    })
+};
+ 
 export default agendamentoController;

@@ -1,35 +1,33 @@
-import { Connection } from 'mysql2';
 import agendamentoRepository from '../repositories/agendamentoRepository.js';
-
+import appError from '../errors/appError.js';
+ 
+const agora = () => new Date().toISOString().slice(0, 19).replace('T', ' ');
+ 
 const agendamentoService = {
-    criar: async (id_passageiro, id_voo, data_agendamento, agendamentoStatus) => {
-        const result = await agendamentoRepository.criar(id_passageiro, id_voo, data_agendamento, agendamentoStatus);
-        const assentos = await verificarAssento(Connection, id_voo);
-        if (assentos > 0) {
-            throw new Error('Não há vagas disponíveis para este voo.');
-        }
-        return result;
+    listar: async (user) => {
+        return user.tipo_usuario === 'ADMIN'
+            ? await agendamentoRepository.listarTudo()
+            : await agendamentoRepository.listarPorUsuario(user.id_usuario);
     },
-    listarTudo: async () => {
-        const result = await agendamentoRepository.listarTudo();
-        return result;
+ 
+    criar: async (user, { id_passageiro, id_voo }) => {
+        if (!id_voo) throw new appError("Informe o voo para realizar o agendamento!");
+ 
+        // Passageiro só agenda para si mesmo; admin escolhe o passageiro
+        const idFinal = user.tipo_usuario === 'ADMIN'
+            ? id_passageiro
+            : await agendamentoRepository.passageiroDoUsuario(user.id_usuario);
+ 
+        if (!idFinal) throw new appError("Passageiro não informado ou usuário sem cadastro de passageiro.");
+ 
+        return await agendamentoRepository.criarComVaga(idFinal, id_voo, agora());
     },
-    listarId: async (id_agendamento) => {
-        const result = await agendamentoRepository.listarId(id_agendamento);
-        return result;
-    },
-    listarData: async (data_agendamento) => {
-        const result = await agendamentoRepository.listarData(data_agendamento);
-        return result;
-    },
-    listarStatus: async (agendamentoStatus) => {
-        const result = await agendamentoRepository.listarStatus(agendamentoStatus);
-        return result;
-    },
-    atualizar: async (id_agendamento, id_passageiro, id_voo, data_agendamento, agendamentoStatus) => {
-        const result = await agendamentoRepository.atualizar(id_agendamento, id_passageiro, id_voo, data_agendamento, agendamentoStatus);
-        return result;
-    },
-}
-
+ 
+    deletar: async (user, id_agendamento) => {
+        const idUsuario = user.tipo_usuario === 'ADMIN' ? null : user.id_usuario;
+        const ok = await agendamentoRepository.deletarComVaga(id_agendamento, idUsuario);
+        if (!ok) throw new appError("Agendamento não encontrado!", 404);
+    }
+};
+ 
 export default agendamentoService;
