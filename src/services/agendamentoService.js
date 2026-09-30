@@ -30,6 +30,10 @@ const agendamentoService = {
         const result = await agendamentoRepository.atualizar(id_agendamento, id_passageiro, id_voo, data_agendamento, agendamentoStatus);
         return result;
     },
+    verificarAssento: async (Connection, id_voo) => {
+        const result = await agendamentoRepository.verificarAssento(Connection, id_voo);
+        return result;
+    }
 }
 
 export default agendamentoService;
