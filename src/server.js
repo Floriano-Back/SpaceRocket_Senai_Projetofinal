@@ -16,15 +16,8 @@ const corsOptions = {
     optionsSuccessStatus: 200
 };
 
-app.get('/', (req, res) => {
-    res.json({ 
-        status: "sucesso",
-        mensagem: "A API do projeto SpaceRocket está online e a funcionar perfeitamente!" 
-    });
-})
-
 app.use(cors(corsOptions));
-app.use(express.static('public'));
+app.use(express.static('src/public'));
 app.use(express.json());
 app.use('/users', usersRouters);
 app.use('/auth', usersAuthRouters);
