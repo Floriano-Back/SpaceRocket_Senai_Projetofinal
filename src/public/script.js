@@ -34,8 +34,8 @@ function go(v) {
   $('#who').textContent = S.user ? `${S.user.name || S.user.email} (${S.user.tipo_usuario})` : '';
   $('#out').hidden = !S.token;
   if (!S.token) { setNav([]); return authView(); }
-  setNav([['voos', 'Voos'], ['ag', 'Agendamentos'], ['av', 'Avaliações'], ...(admin() ? [['pas', 'Passageiros']] : [])]);
-  run(() => v === 'ag' ? agView() : v === 'av' ? avView() : v === 'pas' && admin() ? pasView() : voosView());
+  setNav([['voos', 'Voos'], ['ag', 'Agendamentos'], ['av', 'Avaliações'], ...(admin() ? [['pas', 'Passageiros']] : [['perfil', 'Meu perfil']])]);
+  run(() => v === 'ag' ? agView() : v === 'av' ? avView() : v === 'pas' && admin() ? pasView() : v === 'perfil' && !admin() ? perfilView() : voosView());
 }
 $('#out').onclick = () => { S = {}; save(); go(); };
 
@@ -247,6 +247,28 @@ const delPas = id => {
   if (!confirm(`Excluir o passageiro "${p ? p.nome : id}"? Isso remove também o usuário, as avaliações físicas e os agendamentos dele.`)) return;
   run(async () => { await api('/passageiros/' + id, 'DELETE'); toast('Passageiro excluído.', true); pasView(); });
 };
+
+/* ---------- Meu perfil (passageiro) ---------- */
+async function perfilView() {
+  if (!S.pid) return $('#app').innerHTML = '<div class="card">Seu usuário não possui cadastro de passageiro.</div>';
+  const p = await api('/passageiros/' + S.pid);
+  const v = k => e(p[k] ?? '');
+  const end = p.cep ? `${p.rua} - ${p.cidade}/${p.estado} (CEP ${p.cep})` : 'Não informado';
+  $('#app').innerHTML = `<div class="card box"><h2>Meu perfil</h2><form id="pf">
+    <div class="g"><div><label>E-mail</label><input value="${v('email')}" disabled></div>
+    <div><label>CPF</label><input value="${v('cpf')}" disabled></div>
+    <div><label>Nascimento</label><input value="${e(String(p.data_nascimento ?? '').slice(0, 10))}" disabled></div>
+    <div><label>Endereço</label><input value="${e(end)}" disabled></div></div>
+    <div class="g"><div><label>Nome</label><input name="nome" value="${v('nome')}" required></div>
+    <div><label>Telefone</label><input name="telefone" value="${v('telefone')}"></div>
+    <div><label>Peso (kg)</label><input name="peso" type="number" step="0.01" min="20" max="300" value="${v('peso')}"></div>
+    <div><label>Altura (m)</label><input name="altura" type="number" step="0.01" min="0.5" max="2.5" value="${v('altura')}"></div></div>
+    <button>Salvar alterações</button></form></div>`;
+  $('#pf').onsubmit = ev => { ev.preventDefault(); const f = fd(ev); run(async () => {
+    await api('/passageiros/' + S.pid, 'PUT', {nome: f.nome, telefone: f.telefone, peso: +f.peso || null, altura: +f.altura || null});
+    toast('Dados atualizados!', true); perfilView();
+  }); };
+}
 
 /* ---------- Status do banco de dados ---------- */
 async function checkDb() {
