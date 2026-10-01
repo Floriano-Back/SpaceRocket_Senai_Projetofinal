@@ -10,7 +10,7 @@ import avaliacaoRouters from '../src/routes/avaliacaoRouters.js';
 import cors from 'cors'; 
 
 const app = express();
-const port = process.env.PORT || process.env.SERVER_PORT || 3000;
+const port = process.env.PORT || process.env.SERVER_PORT;
 const corsOptions = {
     origin: process.env.FRONTEND_URL || 'https://spacerocket-senai-projetofinal.onrender.com/', 
     optionsSuccessStatus: 200
