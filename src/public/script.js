@@ -2,7 +2,7 @@ const $ = s => document.querySelector(s);
 const e = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let S = JSON.parse(localStorage.getItem('sr') || '{}');
 let V = [];
-const API = 'http://localhost:3030'; // URL do back-end
+const API = location.origin; 
 
 function toast(t, ok) {
   const d = document.createElement('div');
