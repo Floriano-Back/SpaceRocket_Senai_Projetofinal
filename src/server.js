@@ -12,7 +12,7 @@ import cors from 'cors';
 const app = express();
 const port = process.env.PORT || process.env.SERVER_PORT || 3000;
 const corsOptions = {
-    origin: process.env.FRONTEND_URL || 'https://api-gestao-biblioteca.onrender.com/', 
+    origin: process.env.FRONTEND_URL || 'https://spacerocket-senai-projetofinal.onrender.com/', 
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
