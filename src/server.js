@@ -15,6 +15,14 @@ const corsOptions = {
     origin: process.env.FRONTEND_URL || 'https://spacerocket-senai-projetofinal.onrender.com/', 
     optionsSuccessStatus: 200
 };
+
+app.get('/', (req, res) => {
+    res.json({ 
+        status: "sucesso",
+        mensagem: "A API do projeto SpaceRocket está online e a funcionar perfeitamente!" 
+    });
+})
+
 app.use(cors(corsOptions));
 app.use(express.static('public'));
 app.use(express.json());
