@@ -11,8 +11,12 @@ import cors from 'cors';
 
 const app = express();
 const port = process.env.SERVER_PORT;
-
-app.use(cors());
+const corsOptions = {
+    origin: process.env.FRONTEND_URL || 'https://api-gestao-biblioteca.onrender.com/', 
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+app.use(express.static('public'));
 app.use(express.json());
 app.use('/users', usersRouters);
 app.use('/auth', usersAuthRouters);
