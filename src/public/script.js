@@ -2,8 +2,7 @@ const $ = s => document.querySelector(s);
 const e = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let S = JSON.parse(localStorage.getItem('sr') || '{}');
 let V = [];
-$('#api').value = localStorage.getItem('srapi') || $('#api').value;
-$('#api').onchange = () => localStorage.setItem('srapi', $('#api').value.trim());
+const API = 'http://localhost:3030'; // URL do back-end
 
 function toast(t, ok) {
   const d = document.createElement('div');
@@ -15,7 +14,7 @@ async function api(path, method = 'GET', body) {
   const h = {'Content-Type': 'application/json'};
   if (S.token) h.Authorization = 'Bearer ' + S.token;
   let r;
-  try { r = await fetch($('#api').value.trim() + path, {method, headers: h, body: body ? JSON.stringify(body) : undefined}); }
+  try { r = await fetch(API + path, {method, headers: h, body: body ? JSON.stringify(body) : undefined}); }
   catch { throw new Error('Não foi possível conectar ao back-end (servidor ligado? CORS habilitado?)'); }
   let d = {}; try { d = await r.json(); } catch {}
   if (S.token && (r.status === 401 || d.msg === 'Negado!!!')) {
@@ -248,5 +247,22 @@ const delPas = id => {
   if (!confirm(`Excluir o passageiro "${p ? p.nome : id}"? Isso remove também o usuário, as avaliações físicas e os agendamentos dele.`)) return;
   run(async () => { await api('/passageiros/' + id, 'DELETE'); toast('Passageiro excluído.', true); pasView(); });
 };
+
+/* ---------- Status do banco de dados ---------- */
+async function checkDb() {
+  const el = $('#db');
+  try {
+    const r = await fetch(API + '/health', {signal: AbortSignal.timeout(4000)});
+    const d = await r.json().catch(() => ({}));
+    const ok = r.ok && d.database === 'connected';
+    el.className = 'tag db ' + (ok ? 'on' : 'off');
+    el.textContent = ok ? 'Banco de dados: conectado' : 'Banco de dados: desconectado';
+  } catch {
+    el.className = 'tag db off';
+    el.textContent = 'API offline';
+  }
+}
+checkDb();
+setInterval(checkDb, 10000);
 
 go('voos');

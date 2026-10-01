@@ -29,3 +29,6 @@ td:last-child{white-space:nowrap}
 .card.apto{color:var(--ok);border-color:var(--ok)}.card.inapto{color:var(--err);border-color:var(--err)}
 .tag.apto{color:var(--ok);border-color:var(--ok)}.tag.inapto{color:var(--err);border-color:var(--err)}
 button:disabled{opacity:.45;cursor:not-allowed}
+.db::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mut);margin-right:6px}
+.db.on{color:var(--ok);border-color:var(--ok)}.db.on::before{background:var(--ok)}
+.db.off{color:var(--err);border-color:var(--err)}.db.off::before{background:var(--err)}
