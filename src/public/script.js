@@ -35,8 +35,8 @@ function go(v) {
   $('#who').textContent = S.user ? `${S.user.name || S.user.email} (${S.user.tipo_usuario})` : '';
   $('#out').hidden = !S.token;
   if (!S.token) { setNav([]); return authView(); }
-  setNav([['voos', 'Voos'], ['ag', 'Agendamentos']]);
-  run(() => v === 'ag' ? agView() : voosView());
+  setNav([['voos', 'Voos'], ['ag', 'Agendamentos'], ['av', 'Avaliações'], ...(admin() ? [['pas', 'Passageiros']] : [])]);
+  run(() => v === 'ag' ? agView() : v === 'av' ? avView() : v === 'pas' && admin() ? pasView() : voosView());
 }
 $('#out').onclick = () => { S = {}; save(); go(); };
 
@@ -96,7 +96,11 @@ const ST = ['AGENDADO', 'EMBARQUE', 'FINALIZADO', 'PENDENTE', 'CANCELADO'];
 async function voosView() {
   const r = await api(admin() ? '/voos/all' : '/voos');
   V = r.resultado || [];
-  $('#app').innerHTML = (admin() ? `<div class="card"><h2 id="ft">Cadastrar voo</h2><form id="vf">
+  if (!admin()) {
+    try { const av = (await api('/avaliacoes')).result || []; S.apto = av.length ? av[0].condicao_fisica : null; }
+    catch { S.apto = null; }
+  }
+  $('#app').innerHTML = (admin() ? '' : aviso()) + (admin() ? `<div class="card"><h2 id="ft">Cadastrar voo</h2><form id="vf">
     <input type="hidden" name="id">
     <div class="g"><div><label>Código</label><input name="codigo_voo" required></div>
     <div><label>Origem</label><input name="origem" required></div>
@@ -114,7 +118,7 @@ async function voosView() {
     <td>R$ ${Number(v.valor).toFixed(2)}</td><td>${e(v.vagas_disponiveis ?? v.capacidade)}</td>
     <td><span class="tag">${e(v.vooStatus)}</span></td><td>${admin()
       ? `<button class="s" onclick="editarVoo(${v.id_voo})">Editar</button> <button class="d" onclick="delVoo(${v.id_voo})">Excluir</button>`
-      : `<button onclick="agendar(${v.id_voo})">Agendar</button>`}</td></tr>`).join('') || '<tr><td colspan="7">Nenhum voo.</td></tr>'}
+      : `<button onclick="agendar(${v.id_voo})" ${S.apto === 'APTO' ? '' : 'disabled title="Necessário estar APTO na avaliação física"'}>Agendar</button>`}</td></tr>`).join('') || '<tr><td colspan="7">Nenhum voo.</td></tr>'}
     </table></div>`;
   if (admin()) $('#vf').onsubmit = ev => { ev.preventDefault(); run(() => salvarVoo(fd(ev))); };
 }
@@ -175,5 +179,74 @@ async function agView() {
   if (admin()) $('#af').onsubmit = ev => { ev.preventDefault(); const f = fd(ev); agendar(+f.v, +f.p); };
 }
 const delAg = id => confirm('Cancelar este agendamento?') && run(async () => { await api('/agendamentos/' + id, 'DELETE'); toast('Agendamento cancelado.', true); agView(); });
+
+/* ---------- Avaliações físicas ---------- */
+const aviso = () => `<div class="card note ${S.apto === 'APTO' ? 'apto' : 'inapto'}">${S.apto === 'APTO'
+  ? 'Você está APTO para voar.'
+  : S.apto ? 'Sua última avaliação física deu ' + S.apto + ': não é possível agendar voos.'
+  : 'Você ainda não tem avaliação física. Procure a administração antes de agendar.'}</div>`;
+
+const imcCalc = (p, a) => p > 0 && a > 0 ? Math.round(p / (a * a) * 100) / 100 : null;
+function imcInfo(i) {
+  if (i < 18.5) return ['Abaixo do peso', false];
+  if (i < 25) return ['Peso normal', true];
+  if (i < 30) return ['Sobrepeso', true];
+  if (i < 35) return ['Obesidade Grau I', false];
+  if (i < 40) return ['Obesidade Grau II', false];
+  return ['Obesidade Grau III', false];
+}
+
+async function avView() {
+  const [a, ps] = await Promise.all([api('/avaliacoes'), admin() ? api('/passageiros') : Promise.resolve([])]);
+  const L = a.result || [];
+  $('#app').innerHTML = (admin() ? `<div class="card"><h2>Nova avaliação física</h2><form id="avf"><div class="g">
+    <div><label>Passageiro</label><select name="id_passageiro" required>${ps.map(p => `<option value="${p.id_passageiro}">${e(p.nome)}</option>`).join('')}</select></div>
+    <div><label>Peso (kg)</label><input name="peso" type="number" step="0.01" min="20" max="300" required></div>
+    <div><label>Altura (m)</label><input name="altura" type="number" step="0.01" min="0.5" max="2.5" required></div>
+    <div><label>Observação</label><input name="observacao"></div></div>
+    <p id="prev" class="note">Informe peso e altura para ver o IMC.</p>
+    <button>Salvar avaliação</button></form></div>` : '') +
+    `<div class="card x"><h2>${admin() ? 'Avaliações físicas' : 'Minhas avaliações físicas'}</h2><table>
+    <tr><th>#</th>${admin() ? '<th>Passageiro</th>' : ''}<th>Peso</th><th>Altura</th><th>IMC</th><th>Classificação</th><th>Condição</th><th>Data</th>${admin() ? '<th></th>' : ''}</tr>
+    ${L.map(x => `<tr><td>${x.id_avaliacao}</td>${admin() ? `<td>${e(x.nome_passageiro)}</td>` : ''}
+    <td>${Number(x.peso).toFixed(1)} kg</td><td>${Number(x.altura).toFixed(2)} m</td><td>${Number(x.imc).toFixed(2)}</td>
+    <td>${e(x.classificacao)}</td><td><span class="tag ${x.condicao_fisica === 'APTO' ? 'apto' : 'inapto'}">${e(x.condicao_fisica)}</span></td>
+    <td>${e(String(x.data_avaliacao).replace('T', ' ').slice(0, 16))}</td>
+    ${admin() ? `<td><button class="d" onclick="delAv(${x.id_avaliacao})">Excluir</button></td>` : ''}</tr>`).join('') || `<tr><td colspan="9">Nenhuma avaliação.</td></tr>`}
+    </table></div>`;
+  if (!admin()) return;
+  const f = $('#avf');
+  f.peso.oninput = f.altura.oninput = () => {
+    const i = imcCalc(+f.peso.value, +f.altura.value);
+    if (!i) return $('#prev').textContent = 'Informe peso e altura para ver o IMC.';
+    const [c, ok] = imcInfo(i);
+    $('#prev').innerHTML = `IMC <b>${i.toFixed(2)}</b> — ${c} → <span class="tag ${ok ? 'apto' : 'inapto'}">${ok ? 'APTO' : 'INAPTO'}</span>`;
+  };
+  f.onsubmit = ev => { ev.preventDefault(); const d = fd(ev); run(async () => {
+    const r = await api('/avaliacoes', 'POST', {id_passageiro: +d.id_passageiro, peso: +d.peso, altura: +d.altura, observacao: d.observacao});
+    toast(`Avaliação salva: IMC ${r.result.imc} (${r.result.condicao_fisica})`, true); avView();
+  }); };
+}
+const delAv = id => confirm('Excluir esta avaliação?') && run(async () => { await api('/avaliacoes/' + id, 'DELETE'); toast('Avaliação excluída.', true); avView(); });
+
+/* ---------- Passageiros (admin) ---------- */
+let PS = [];
+async function pasView() {
+  PS = await api('/passageiros');
+  const linhas = q => PS.filter(p => [p.nome, p.email, p.cpf].join(' ').toLowerCase().includes(q.toLowerCase()))
+    .map(p => `<tr><td>${p.id_passageiro}</td><td>${e(p.nome)}</td><td>${e(p.email)}</td><td>${e(p.cpf)}</td><td>${e(p.telefone)}</td>
+      <td><button class="d" onclick="delPas(${p.id_passageiro})">Excluir</button></td></tr>`).join('')
+    || '<tr><td colspan="6">Nenhum passageiro encontrado.</td></tr>';
+  $('#app').innerHTML = `<div class="card x"><h2>Passageiros cadastrados (${PS.length})</h2>
+    <div class="g"><input id="busca" placeholder="Buscar por nome, e-mail ou CPF"></div>
+    <table><tr><th>#</th><th>Nome</th><th>E-mail</th><th>CPF</th><th>Telefone</th><th></th></tr>
+    <tbody id="pl">${linhas('')}</tbody></table></div>`;
+  $('#busca').oninput = ev => $('#pl').innerHTML = linhas(ev.target.value);
+}
+const delPas = id => {
+  const p = PS.find(x => x.id_passageiro == id);
+  if (!confirm(`Excluir o passageiro "${p ? p.nome : id}"? Isso remove também o usuário, as avaliações físicas e os agendamentos dele.`)) return;
+  run(async () => { await api('/passageiros/' + id, 'DELETE'); toast('Passageiro excluído.', true); pasView(); });
+};
 
 go('voos');

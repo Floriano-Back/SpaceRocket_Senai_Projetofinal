@@ -6,6 +6,7 @@ import errorMiddlewares from '../src/middlewares/errorMiddlewares.js';
 import voosRouters from "../src/routes/voosRouters.js";
 import passageiroRoutes from '../src/routes/passageiroRoutes.js';
 import agendamentosRouters from '../src/routes/agendamentoRouters.js';
+import avaliacaoRouters from '../src/routes/avaliacaoRouters.js';
 import cors from 'cors'; 
 
 const app = express();
@@ -18,6 +19,7 @@ app.use('/auth', usersAuthRouters);
 app.use("/voos", voosRouters);
 app.use('/passageiros', passageiroRoutes);
 app.use('/agendamentos', agendamentosRouters);
+app.use('/avaliacoes', avaliacaoRouters);
 
 app.use(errorMiddlewares);
 

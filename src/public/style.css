@@ -25,3 +25,7 @@ td:last-child{white-space:nowrap}
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .box{max-width:520px;margin:24px auto}
 .x{overflow-x:auto}
+.note{color:var(--mut);font-size:14px}
+.card.apto{color:var(--ok);border-color:var(--ok)}.card.inapto{color:var(--err);border-color:var(--err)}
+.tag.apto{color:var(--ok);border-color:var(--ok)}.tag.inapto{color:var(--err);border-color:var(--err)}
+button:disabled{opacity:.45;cursor:not-allowed}
