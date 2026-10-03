@@ -7,9 +7,13 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="space" aria-hidden="true">
+  <div class="stars s1"></div><div class="stars s2"></div><div class="shoot"></div>
+  <div class="mars"></div><div class="orbit"><div class="station"></div></div><div class="moon"></div>
+</div>
 <header>
-  <h1>🚀 Space Rocket</h1>
-  <div style="display:flex;gap:8px;align-items:center">
+  <h1><span class="logo">🚀</span> Space Rocket <small>Lua · Marte · Estação Espacial</small></h1>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
     <span id="db" class="tag db" title="Status da conexão com o banco de dados">verificando…</span>
     <span id="who"></span>
     <button class="s" id="out" hidden>Sair</button>
@@ -18,7 +22,8 @@
 <nav id="nav"></nav>
 <div id="msg"></div>
 <main id="app"></main>
-
+ 
 <script src="script.js"></script>
 </body>
 </html>
+ 
