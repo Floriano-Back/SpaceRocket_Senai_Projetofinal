@@ -40,8 +40,47 @@ function go(v) { window.cur = v || 'voos';
 $('#out').onclick = () => { S = {}; save(); go(); };
 
 /* ---------- Login / Cadastro ---------- */
+/* Lua e Marte: fotos locais (moon.webp / mars.webp, na mesma pasta do index.html). O rover lunar é rover-lunar.webp (mesma pasta). Os rovers de Marte vêm da NASA (domínio público). */
+const IMG_LUA = 'moon.webp';
+const IMG_MARTE = 'mars.webp';
+const NASA = id => `https://images-assets.nasa.gov/image/${id}/${id}~large.jpg`;
+const IMG_ROVER_LUA = 'rover-lunar.webp';
+const IMG_PERSEVERANCE = 'https://d2pn8kiwq2w21t.cloudfront.net/original_images/jpegPIA24542.jpg';
+const IMG_CURIOSITY = 'https://d2pn8kiwq2w21t.cloudfront.net/original_images/jpegPIA20844.jpg';
+const naves = () => `<div class="card ships">
+  <h2>Veículos de exploração</h2>
+  <p class="note">Veículos como estes já percorreram a superfície da Lua e de Marte, e mostram como será se locomover nesses mundos.</p>
+  <div class="ship-grid">
+    <figure class="ship big"><img src="${IMG_ROVER_LUA}" alt="Veículo lunar (rover) na superfície da Lua" onerror="this.closest('figure').remove()">
+      <figcaption>Rover lunar<small>Percorrendo a superfície da Lua</small></figcaption></figure>
+    <figure class="ship"><img src="${IMG_PERSEVERANCE}" alt="Rover Perseverance em Marte" onerror="this.closest('figure').remove()">
+      <figcaption>Perseverance<small>Explorando Marte</small></figcaption></figure>
+    <figure class="ship"><img src="${IMG_CURIOSITY}" alt="Rover Curiosity em Marte" onerror="this.closest('figure').remove()">
+      <figcaption>Curiosity<small>Rumo ao Monte Sharp</small></figcaption></figure>
+  </div>
+</div>`;
+const historia = () => `<div class="story">
+  <span class="eyebrow">Desde 2026</span>
+  <h2>Sonhos também <em>decolam</em></h2>
+  <p>A <strong>Space Rocket</strong> nasceu em 2026 com uma missão simples: <strong>fazer sonhos serem realizados</strong>. Quem já olhou para o céu e pensou "eu quero ir até lá" sabe que essa vontade merece sair do papel.</p>
+  <p>Levamos você à <strong>Lua</strong> e a <strong>Marte</strong> com preparo físico, acompanhamento e cuidado em cada etapa, do cadastro ao embarque.</p>
+  <div class="worlds">
+    <figure class="world moon"><div class="orb"><img src="${IMG_LUA}" alt="Lua" onerror="this.remove()"></div>
+      <figcaption>Lua<small>O primeiro passo</small></figcaption></figure>
+    <figure class="world mars"><div class="orb"><img src="${IMG_MARTE}" alt="Marte" onerror="this.remove()"></div>
+      <figcaption>Marte<small>O próximo grande salto</small></figcaption></figure>
+  </div>
+  <figure class="mall">
+    <img src="img/shopping-galaxia.jpg" alt="Shopping espacial com lojas, restaurantes e vista para a Terra" onerror="this.remove();console.warn('Imagem do shopping não encontrada: coloque shopping-galaxia.jpg na pasta img/, ao lado do index.html')">
+    <figcaption>
+      <span class="eyebrow">Em breve</span>
+      <h3>O primeiro shopping da galáxia</h3>
+      <p>Depois do pouso, a viagem continua. Estamos sonhando com um shopping em órbita, com lojas, restaurantes e livrarias sob uma cúpula de vidro com vista para a Terra. Passear, comer e fazer compras no espaço, sem precisar voltar para casa.</p>
+    </figcaption>
+  </figure>
+</div>`;
 function authView(tab = 'login') {
-  $('#app').innerHTML = `<section class="hero"><h2>Sua próxima parada fica a milhões de quilômetros</h2><p>Reserve voos para a Lua, Marte e a Estação Espacial.</p><div class="chips"><span class="chip"><i class="pl-moon"></i>Lua</span><span class="chip"><i class="pl-mars"></i>Marte</span><span class="chip"><i class="pl-station"></i>Estação Espacial</span></div></section><div class="card box">
+  $('#app').innerHTML = `<section class="auth">${historia()}<div class="side"><div class="card box">
     <div class="tabs"><button class="${tab=='login'?'on':'s'}" onclick="authView('login')">Entrar</button>
     <button class="${tab=='reg'?'on':'s'}" onclick="authView('reg')">Cadastrar</button></div>
     ${tab == 'login' ? `<form id="f">
@@ -60,7 +99,8 @@ function authView(tab = 'login') {
       <div><label>Altura (m)</label><input name="altura" type="number" step="0.01"></div></div>
       <div class="g"><div><label>CEP</label><input name="cep"></div><div><label>Rua</label><input name="rua"></div>
       <div><label>Cidade</label><input name="cidade"></div><div><label>Estado</label><input name="estado"></div></div></div>
-      <button>Cadastrar</button></form>`}</div>`;
+      <button>Cadastrar</button></form>`}</div>${naves()}</div></section>
+    <p class="credit foot">Imagens: NASA, JPL-Caltech, MSSS, USGS</p>`;
   if (tab == 'reg') $('#tipo').onchange = () => $('#pas').hidden = $('#tipo').value == 'ADMIN';
   $('#f').onsubmit = ev => { ev.preventDefault(); run(() => tab == 'login' ? login(fd(ev)) : cadastrar(fd(ev))); };
 }
