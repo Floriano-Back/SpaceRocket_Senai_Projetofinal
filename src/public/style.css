@@ -1,4 +1,4 @@
-:root{--bg:#050816;--card:rgba(15,21,46,.66);--line:rgba(140,160,255,.18);--txt:#eaf0ff;--mut:#98a4d4;--acc:#7c8cff;--acc2:#38d6ff;--ok:#3ecf8e;--err:#ff6b6b}
+:root{--mars:#ff6a3d;--mars2:#c1440e;--cyan:#4fd8ff;--panel-b:rgba(255,255,255,.09);--warn:#ffb547;--r:14px;--display:'Orbitron','Segoe UI',system-ui,sans-serif;--body:'Inter','Segoe UI',system-ui,sans-serif;--bg:#050816;--card:rgba(15,21,46,.66);--line:rgba(140,160,255,.18);--txt:#eaf0ff;--mut:#98a4d4;--acc:#7c8cff;--acc2:#38d6ff;--ok:#3ecf8e;--err:#ff6b6b}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:Inter,system-ui,'Segoe UI',sans-serif;color:var(--txt);background:var(--bg);overflow-x:hidden}
 
@@ -22,7 +22,6 @@ body{margin:0;min-height:100vh;font-family:Inter,system-ui,'Segoe UI',sans-serif
 .space .station::before{content:'';position:absolute;left:14px;top:4px;width:8px;height:10px;background:#cfd6ff;border-radius:2px}
 .space .station::after{content:'';position:absolute;left:0;top:7px;width:36px;height:4px;border-radius:2px;background:linear-gradient(90deg,#3aa0ff,#cfd6ff 40%,#cfd6ff 60%,#3aa0ff)}
 @media(max-width:700px){.space .mars{width:200px;height:200px;top:-60px;right:-60px}.space .moon{width:240px;height:240px}.orbit{display:none}}
-@media(prefers-reduced-motion:reduce){.space *,.logo,.card,.voo{animation:none!important}}
 
 /* ===== Layout ===== */
 header{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding:12px 28px;background:rgba(5,8,22,.55);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
@@ -88,7 +87,7 @@ tr:hover td{background:rgba(124,140,255,.1)}
 .voo{--c:#aab;position:relative;overflow:hidden;background:var(--card);backdrop-filter:blur(14px);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:16px;padding:18px;transition:.25s;animation:rise .45s ease both}
 .voo:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,0,10,.5)}
 .voo.moon{--c:#d8dcef}.voo.mars{--c:#ff7a45}.voo.station{--c:#4fd0ff}
-.orb{position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;opacity:.55}
+.voo .orb{position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;opacity:.55}
 .vtop{position:relative;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .code{font-size:12px;letter-spacing:2px;color:var(--c);font-weight:700}
 .voo h3{position:relative;margin:0 0 4px;font-size:20px}.voo h3 i{color:var(--c);font-style:normal}
@@ -97,3 +96,115 @@ tr:hover td{background:rgba(124,140,255,.1)}
 .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--c),rgba(255,255,255,.4));transition:width .6s}
 .seats{font-size:12px;color:var(--mut);margin:6px 0 14px}
 .vfoot{display:flex;justify-content:space-between;align-items:center;gap:8px}.vfoot strong{font-size:18px}
+
+[hidden]{display:none!important}
+
+/* ===== Tela de login / cadastro (única com imagens) ===== */
+.auth {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  gap: clamp(20px, 4vw, 56px); align-items: start;
+  max-width: 1100px; margin: 0 auto; padding: clamp(8px, 3vw, 32px) 0;
+}
+.story { margin-top: -28px; }
+.side { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 480px; justify-self: center; }
+.side > .card { margin: 0; width: 100%; max-width: none; }
+
+.story .eyebrow {
+  display: inline-block; padding: 5px 14px; border-radius: 999px; margin-bottom: 16px;
+  font: 600 .72rem var(--display); letter-spacing: .2em; text-transform: uppercase;
+  color: var(--mars); border: 1px solid rgba(255, 106, 61, .45); background: rgba(255, 106, 61, .1);
+}
+.story h2 {
+  margin: 0 0 14px; font: 800 clamp(1.7rem, 4vw, 2.9rem)/1.12 var(--display);
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.story h2 em { font-style: normal; color: var(--mars); text-shadow: 0 0 28px rgba(255, 106, 61, .55); }
+.story p { margin: 0 0 12px; color: #b7c0d8; font-size: 1.02rem; max-width: 560px; }
+.story p strong { color: #fff; }
+
+.worlds { display: flex; gap: clamp(14px, 3vw, 28px); margin-top: 26px; flex-wrap: wrap; }
+.world { margin: 0; text-align: center; flex: 1 1 150px; max-width: 260px; }
+.world .orb {
+  position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden;
+  background-color: #1a1f33; background-size: cover; background-position: center;
+  transition: transform .5s ease;
+}
+.world .orb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+/* sombra esférica para dar volume à foto */
+.world .orb::after {
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+  box-shadow: inset -28px -22px 55px rgba(0, 0, 0, .7), inset 8px 8px 24px rgba(255, 255, 255, .08);
+}
+.world.mars .orb { box-shadow: 0 0 70px rgba(255, 106, 61, .38); background-image: radial-gradient(circle at 40% 40%, #e0673a, #5a1a05); }
+.world.moon .orb { box-shadow: 0 0 60px rgba(207, 214, 228, .25); background-image: radial-gradient(circle at 40% 40%, #d8dde8, #454c5d); }
+.world:hover .orb { transform: scale(1.05); }
+.world figcaption { margin-top: 12px; font: 600 .8rem var(--display); letter-spacing: .2em; text-transform: uppercase; }
+.world figcaption small { display: block; margin-top: 4px; font: 400 .78rem var(--body); letter-spacing: 0; text-transform: none; color: var(--mut); }
+.credit { margin-top: 18px; font-size: .68rem; color: #5f6b88; }
+
+
+@media (max-width: 860px) {
+  .auth { grid-template-columns: 1fr; }
+  .story { text-align: center; margin-top: 0; }
+  .story p { margin-inline: auto; }
+  .worlds { justify-content: center; }
+  .side { max-width: 560px; }
+}
+
+/* ----- galeria de naves (lado direito) ----- */
+.ships h2 { margin-bottom: 8px; }
+.ships .note { margin: 0 0 14px; }
+.ship-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ship { position: relative; margin: 0; overflow: hidden; border-radius: 12px; aspect-ratio: 4 / 3; background: #0b1020; border: 1px solid var(--panel-b); }
+.ship.big { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+.ship img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+.ship:hover img { transform: scale(1.07); }
+.ship::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(3, 5, 12, .88)); pointer-events: none; }
+.ship figcaption {
+  position: absolute; left: 12px; right: 12px; bottom: 10px; z-index: 1;
+  font: 600 .72rem var(--display); letter-spacing: .14em; text-transform: uppercase;
+}
+.ship figcaption small { display: block; margin-top: 3px; font: 400 .78rem var(--body); letter-spacing: 0; text-transform: none; color: #c3cbe0; }
+
+.credit.foot { text-align: center; margin: 6px 0 24px; font-size: .66rem; opacity: .6; }
+
+/* ----- Lua e Marte girando ----- */
+.world .orb img { animation: girar 90s linear infinite; }
+.world.mars .orb img { animation-duration: 70s; }
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* mantém o giro da Lua e de Marte mesmo com "reduzir animações" ativo no sistema */
+@media (prefers-reduced-motion: reduce) {
+  .world .orb img { animation: girar 90s linear infinite !important; }
+  .world.mars .orb img { animation-duration: 70s !important; }
+}
+
+/* ----- shopping da galáxia (coluna esquerda) ----- */
+.mall {
+  position: relative; margin: 30px 0 0; overflow: hidden; border-radius: var(--r);
+  border: 1px solid var(--panel-b); background: #0b1020;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, .5), 0 0 50px rgba(79, 216, 255, .12);
+}
+.mall img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; transition: transform .8s ease; }
+.mall:hover img { transform: scale(1.04); }
+.mall::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent 30%, rgba(3, 5, 12, .94) 88%);
+}
+.mall figcaption { position: absolute; left: clamp(14px, 3vw, 26px); right: clamp(14px, 3vw, 26px); bottom: clamp(12px, 2.5vw, 22px); z-index: 1; text-align: left; }
+.mall .eyebrow { margin-bottom: 10px; color: var(--cyan); border-color: rgba(79, 216, 255, .5); background: rgba(79, 216, 255, .12); }
+.mall h3 { margin: 0 0 6px; font: 700 clamp(1rem, 2.4vw, 1.45rem)/1.2 var(--display); letter-spacing: .05em; text-transform: uppercase; }
+.mall p { margin: 0; max-width: 620px; font-size: .9rem; color: #c7cfe4; }
+
+@media (max-width: 700px) {
+  .mall { display: flex; flex-direction: column; }
+  .mall::after { display: none; }
+  .mall figcaption { position: static; padding: 14px 16px 16px; }
+}
+
+/* se a foto do shopping não carregar, o texto continua visível */
+.mall:not(:has(img)) { background: linear-gradient(135deg, #0f1a33, #1a1030); }
+.mall:not(:has(img)) figcaption { position: static; padding: 22px; }
+.mall:not(:has(img))::after { display: none; }
