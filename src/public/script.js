@@ -28,9 +28,9 @@ const admin = () => S.user && S.user.tipo_usuario === 'ADMIN';
 const save = () => localStorage.setItem('sr', JSON.stringify(S));
 
 function setNav(items) {
-  $('#nav').innerHTML = items.map(([k, t]) => `<button class="s" onclick="go('${k}')">${t}</button>`).join('');
+  $('#nav').innerHTML = items.map(([k, t]) => `<button class="${k === (window.cur || 'voos') ? 'on' : 's'}" onclick="go('${k}')">${t}</button>`).join('');
 }
-function go(v) {
+function go(v) { window.cur = v || 'voos';
   $('#who').textContent = S.user ? `${S.user.name || S.user.email} (${S.user.tipo_usuario})` : '';
   $('#out').hidden = !S.token;
   if (!S.token) { setNav([]); return authView(); }
@@ -41,7 +41,7 @@ $('#out').onclick = () => { S = {}; save(); go(); };
 
 /* ---------- Login / Cadastro ---------- */
 function authView(tab = 'login') {
-  $('#app').innerHTML = `<div class="card box">
+  $('#app').innerHTML = `<section class="hero"><h2>Sua próxima parada fica a milhões de quilômetros</h2><p>Reserve voos para a Lua, Marte e a Estação Espacial.</p><div class="chips"><span class="chip"><i class="pl-moon"></i>Lua</span><span class="chip"><i class="pl-mars"></i>Marte</span><span class="chip"><i class="pl-station"></i>Estação Espacial</span></div></section><div class="card box">
     <div class="tabs"><button class="${tab=='login'?'on':'s'}" onclick="authView('login')">Entrar</button>
     <button class="${tab=='reg'?'on':'s'}" onclick="authView('reg')">Cadastrar</button></div>
     ${tab == 'login' ? `<form id="f">
@@ -110,15 +110,16 @@ async function voosView() {
     <div><label>Valor (R$)</label><input name="valor" type="number" step="0.01" min="0" required></div>
     <div><label>Status (edição)</label><select name="vooStatus">${ST.map(s => `<option>${s}</option>`).join('')}</select></div></div>
     <button>Salvar</button> <button type="button" class="s" onclick="voosView()">Limpar</button></form></div>` : '') +
-    `<div class="card x"><h2>${admin() ? 'Todos os voos' : 'Voos disponíveis'}</h2><table>
-    <tr><th>Código</th><th>Rota</th><th>Data</th><th>Valor</th><th>Vagas</th><th>Status</th><th></th></tr>
-    ${V.map(v => `<tr><td>${e(v.codigo_voo)}</td><td>${e(v.origem)} → ${e(v.destino)}</td>
-    <td>${e(String(v.data_voo).slice(0, 10))} ${e(String(v.horario_voo).slice(0, 5))}</td>
-    <td>R$ ${Number(v.valor).toFixed(2)}</td><td>${e(v.vagas_disponiveis ?? v.capacidade)}</td>
-    <td><span class="tag">${e(v.vooStatus)}</span></td><td>${admin()
+    `<h2 class="sec">${admin() ? 'Todos os voos' : 'Voos disponíveis'}</h2><div class="vgrid">
+    ${V.map(v => { const vg = v.vagas_disponiveis ?? v.capacidade, pl = planeta(v.destino, v.origem); return `<article class="voo ${pl}"><div class="orb pl-${pl}"></div>
+    <div class="vtop"><span class="code">${e(v.codigo_voo)}</span><span class="tag">${e(v.vooStatus)}</span></div>
+    <h3>${e(v.origem)} <i>→</i> ${e(v.destino)}</h3>
+    <p class="when">${e(String(v.data_voo).slice(0, 10).split('-').reverse().join('/'))} às ${e(String(v.horario_voo).slice(0, 5))}</p>
+    <div class="bar"><span style="width:${Math.round(100 * vg / (v.capacidade || 1))}%"></span></div>
+    <p class="seats">${e(vg)} de ${e(v.capacidade)} vagas</p>
+    <div class="vfoot"><strong>R$ ${Number(v.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong><span>${admin()
       ? `<button class="s" onclick="editarVoo(${v.id_voo})">Editar</button> <button class="d" onclick="delVoo(${v.id_voo})">Excluir</button>`
-      : `<button onclick="agendar(${v.id_voo})" ${S.apto === 'APTO' ? '' : 'disabled title="Necessário estar APTO na avaliação física"'}>Agendar</button>`}</td></tr>`).join('') || '<tr><td colspan="7">Nenhum voo.</td></tr>'}
-    </table></div>`;
+      : `<button onclick="agendar(${v.id_voo})" ${S.apto === 'APTO' ? '' : 'disabled title="Necessário estar APTO na avaliação física"'}>Agendar</button>`}</span></div></article>`; }).join('') || '<p class="note">Nenhum voo.</p>'}</div>`;
   if (admin()) $('#vf').onsubmit = ev => { ev.preventDefault(); run(() => salvarVoo(fd(ev))); };
 }
 function editarVoo(id) {
@@ -269,6 +270,8 @@ async function perfilView() {
     toast('Dados atualizados!', true); perfilView();
   }); };
 }
+
+const planeta = (d, o) => /marte/i.test(d + ' ' + o) ? 'mars' : /lua/i.test(d + ' ' + o) ? 'moon' : 'station';
 
 /* ---------- Status do banco de dados ---------- */
 async function checkDb() {
